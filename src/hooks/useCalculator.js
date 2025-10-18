@@ -1,183 +1,206 @@
 import { useState } from "react";
 
 function useCalculator() {
+  // Main display
   const [display, setDisplay] = useState("0");
-  const [expression, setExpression] = useState("");
+  const [calculScreen, setCalculScreen] = useState("");
+
+  // Calculator state (following Calculator-Windows-main algorithm)
+  const [previousNumber, setPreviousNumber] = useState(0);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [operatorType, setOperatorType] = useState("");
+  const [onResult, setOnResult] = useState(false);
+  const [firstNumberEntered, setFirstNumberEntered] = useState(false);
+
+  // History and Memory
   const [history, setHistory] = useState([]);
-  const [currentOperand, setCurrentOperand] = useState("");
-  const [operator, setOperator] = useState(null);
-  const [previousOperand, setPreviousOperand] = useState("");
-  const [shouldResetDisplay, setShouldResetDisplay] = useState(false);
   const [memoryList, setMemoryList] = useState([]);
   const [hasMemory, setHasMemory] = useState(false);
 
-  // Xử lý số
+  // ADD NUMBER - Following Calculator-Windows-main algorithm
   const handleNumber = (num) => {
-    if (shouldResetDisplay) {
-      setDisplay(num);
-      setCurrentOperand(num);
-      setShouldResetDisplay(false);
+    const numStr = String(num);
+
+    // Accept only 1 dot
+    if (numStr === "." && display.includes(".")) return;
+
+    // Set the value of display to number if:
+    // - we're waiting on the second number
+    // - we already have a result from the previous question
+    // - the display starts with 0 and the number is not a dot and the display does not have a dot
+    // Else we add the number to the already existing ones in the display value
+    if (
+      (isWaiting && firstNumberEntered) ||
+      onResult ||
+      (display.startsWith("0") && numStr !== "." && !display.includes("."))
+    ) {
+      setDisplay(numStr);
+      setOnResult(false);
+      setFirstNumberEntered(false);
     } else {
-      const newDisplay = display === "0" ? num : display + num;
-      setDisplay(newDisplay);
-      setCurrentOperand(newDisplay);
+      setDisplay(display + numStr);
     }
   };
 
-  // Xử lý thập phân
+  // Handle decimal - part of addNumber logic
   const handleDecimal = () => {
-    if (shouldResetDisplay) {
-      setDisplay("0.");
-      setCurrentOperand("0.");
-      setShouldResetDisplay(false);
-    } else if (!display.includes(".")) {
-      const newDisplay = display + ".";
-      setDisplay(newDisplay);
-      setCurrentOperand(newDisplay);
-    }
+    handleNumber(".");
   };
 
-  // Xử lý phép toán
-  const handleOperator = (op) => {
-    if (currentOperand === "" && previousOperand === "") return;
+  // OPERATION - Following Calculator-Windows-main algorithm
+  const handleOperator = (operator) => {
+    // Get which operation we'll be doing and set the current state on the screen
+    const operatorSymbols = {
+      "+": "+",
+      "−": "−",
+      "×": "×",
+      "÷": "÷",
+    };
 
-    if (previousOperand !== "" && currentOperand !== "" && operator) {
-      calculate();
-    }
-
-    setOperator(op);
-    setPreviousOperand(currentOperand || display);
-    setExpression(`${currentOperand || display} ${op}`);
-    setShouldResetDisplay(true);
+    setOperatorType(operator);
+    const prevNum = Number(display);
+    setPreviousNumber(prevNum);
+    setCalculScreen(`${prevNum} ${operatorSymbols[operator] || operator}`);
+    setIsWaiting(true);
+    setFirstNumberEntered(true);
   };
 
-  // Tính toán
+  // CALCULATE (EQUALS) - Following Calculator-Windows-main algorithm
   const calculate = () => {
-    if (operator === null || previousOperand === "") return;
+    if (!isWaiting) return; // We want an operation to do
 
-    const prev = parseFloat(previousOperand);
-    const current = parseFloat(currentOperand || display);
-    let result = 0;
+    setOnResult(true); // Telling there's now a result on the screen
 
-    switch (operator) {
-      case "+":
-        result = prev + current;
-        break;
-      case "−":
-        result = prev - current;
-        break;
-      case "×":
-        result = prev * current;
-        break;
+    // Setting useful variables
+    const lastNumber = Number(display);
+    let answer = 0;
+
+    // Putting the equation on the screen
+    const operatorSymbols = {
+      "+": "+",
+      "−": "−",
+      "×": "×",
+      "÷": "÷",
+    };
+    const equation = `${previousNumber} ${
+      operatorSymbols[operatorType] || operatorType
+    } ${lastNumber}`;
+    setCalculScreen(`${equation} =`);
+
+    switch (operatorType) {
       case "÷":
-        if (current === 0) {
+        if (lastNumber === 0) {
           setDisplay("Không thể chia cho 0");
-          setExpression("");
-          setOperator(null);
-          setPreviousOperand("");
-          setCurrentOperand("");
-          setShouldResetDisplay(true);
+          setCalculScreen("");
+          setIsWaiting(false);
+          setOnResult(true);
           return;
         }
-        result = prev / current;
+        answer = previousNumber / lastNumber;
+        break;
+      case "×":
+        answer = previousNumber * lastNumber;
+        break;
+      case "−":
+        answer = previousNumber - lastNumber;
+        break;
+      case "+":
+        answer = previousNumber + lastNumber;
         break;
       default:
         return;
     }
 
-    const fullExpression = `${previousOperand} ${operator} ${
-      currentOperand || display
-    }`;
+    setDisplay(String(answer));
+    setIsWaiting(false);
+
+    // Add to history
     setHistory([
-      { expression: fullExpression, result: result.toString() },
+      { expression: equation, result: answer.toString() },
       ...history,
     ]);
+  };
 
-    setDisplay(result.toString());
-    setExpression("");
-    setOperator(null);
-    setPreviousOperand("");
-    setCurrentOperand(result.toString());
-    setShouldResetDisplay(true);
+  // OPERATION INSTANT - Following Calculator-Windows-main algorithm
+  const operationInstant = (operator) => {
+    const currentNumber = Number(display);
+    let result = 0;
+    let operationText = "";
+
+    // Doing operation
+    switch (operator) {
+      case "%":
+        result = currentNumber / 100;
+        operationText = `${currentNumber}%`;
+        break;
+      case "1/x":
+        if (currentNumber === 0) {
+          setDisplay("Không thể chia cho 0");
+          setOnResult(true);
+          setCalculScreen("");
+          return;
+        }
+        result = 1 / currentNumber;
+        operationText = `1/(${currentNumber})`;
+        break;
+      case "x2":
+        result = currentNumber ** 2;
+        operationText = `sqr(${currentNumber})`;
+        break;
+      case "2/x":
+        if (currentNumber < 0) {
+          setDisplay("Đầu vào không hợp lệ");
+          setOnResult(true);
+          setCalculScreen("");
+          return;
+        }
+        result = Math.sqrt(currentNumber);
+        operationText = `√(${currentNumber})`;
+        break;
+      default:
+        return;
+    }
+
+    setDisplay(String(result));
+    setCalculScreen(`${operationText} =`);
+    setOnResult(true);
   };
 
   // Clear Entry (CE)
   const handleCE = () => {
     setDisplay("0");
-    setCurrentOperand("");
   };
 
-  // Clear (C)
+  // Clear All (C) - Following Calculator-Windows-main algorithm
   const handleClear = () => {
     setDisplay("0");
-    setExpression("");
-    setOperator(null);
-    setPreviousOperand("");
-    setCurrentOperand("");
-    setShouldResetDisplay(false);
+    setCalculScreen("");
+    setPreviousNumber(0);
+    setIsWaiting(false);
+    setOperatorType("");
+    setOnResult(false);
+    setFirstNumberEntered(false);
   };
 
-  // Backspace
+  // Backspace - Following Calculator-Windows-main algorithm
   const handleBackspace = () => {
-    if (display.length === 1) {
-      setDisplay("0");
-      setCurrentOperand("0");
-    } else {
-      const newDisplay = display.slice(0, -1);
-      setDisplay(newDisplay);
-      setCurrentOperand(newDisplay);
-    }
+    // If there's something to delete, we delete it else we set the value to 0
+    setDisplay(
+      display.length === 1 ? "0" : display.substring(0, display.length - 1)
+    );
   };
 
-  // Phần trăm
-  const handlePercent = () => {
-    const current = parseFloat(display);
-    const result = current / 100;
-    setDisplay(result.toString());
-    setCurrentOperand(result.toString());
-  };
-
-  // Nghịch đảo
-  const handleReciprocal = () => {
-    const current = parseFloat(display);
-    if (current === 0) {
-      setDisplay("Không thể chia cho 0");
-      setShouldResetDisplay(true);
-      return;
-    }
-    const result = 1 / current;
-    setDisplay(result.toString());
-    setCurrentOperand(result.toString());
-  };
-
-  // Bình phương
-  const handleSquare = () => {
-    const current = parseFloat(display);
-    const result = current * current;
-    setDisplay(result.toString());
-    setCurrentOperand(result.toString());
-  };
-
-  // Căn bậc hai
-  const handleSquareRoot = () => {
-    const current = parseFloat(display);
-    if (current < 0) {
-      setDisplay("Đầu vào không hợp lệ");
-      setShouldResetDisplay(true);
-      return;
-    }
-    const result = Math.sqrt(current);
-    setDisplay(result.toString());
-    setCurrentOperand(result.toString());
-  };
-
-  // Đổi dấu
+  // Negate - Following Calculator-Windows-main algorithm
   const handleNegate = () => {
-    const current = parseFloat(display);
-    const result = current * -1;
-    setDisplay(result.toString());
-    setCurrentOperand(result.toString());
+    // If there's a number we inverse it else we set the value to 0
+    setDisplay(display.length !== 0 ? String(-Number(display)) : "0");
   };
+
+  // Wrapper functions for instant operations
+  const handlePercent = () => operationInstant("%");
+  const handleReciprocal = () => operationInstant("1/x");
+  const handleSquare = () => operationInstant("x2");
+  const handleSquareRoot = () => operationInstant("2/x");
 
   // Memory Clear
   const handleMC = () => {
@@ -190,8 +213,7 @@ function useCalculator() {
     if (memoryList.length > 0) {
       const lastMemory = memoryList[memoryList.length - 1];
       setDisplay(lastMemory.value.toString());
-      setCurrentOperand(lastMemory.value.toString());
-      setShouldResetDisplay(true);
+      setOnResult(true);
     }
   };
 
@@ -255,7 +277,7 @@ function useCalculator() {
 
   return {
     display,
-    expression,
+    expression: calculScreen, // Use calculScreen as expression for display
     history,
     setHistory,
     memoryList,
