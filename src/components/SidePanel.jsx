@@ -16,7 +16,7 @@ function SidePanel({
   handleMC,
 }) {
   return (
-    <div className="w-[400px] relative flex flex-col">
+    <div className="w-[400px] h-full relative flex flex-col">
       {showHistory && <HistoryPanel history={history} setHistory={setHistory} />}
       
       {showMemory && (

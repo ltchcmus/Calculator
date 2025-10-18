@@ -11,14 +11,15 @@ function MemoryPanel({
   handleMC,
 }) {
   return (
-    <>
-      <div className="p-4 flex-1 overflow-auto">
+    <div className="h-full flex flex-col relative">
+      {/* Content area with scroll */}
+      <div className="flex-1 overflow-auto p-4">
         {!hasMemory || memoryList.length === 0 ? (
           <p className="text-gray-500 text-sm font-semibold">
             Không có nội dung nào được lưu trong bộ nhớ.
           </p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 pb-20">
             {memoryList.map((item, index) => (
               <div
                 key={index}
@@ -65,15 +66,18 @@ function MemoryPanel({
         )}
       </div>
 
-      {/* Trash icon at bottom right */}
+      {/* Trash icon - absolutely positioned relative to panel, not content */}
       {memoryList.length > 0 && (
-        <div className="absolute bottom-4 right-4">
-          <button onClick={handleMC} className="p-3 hover:bg-gray-200 rounded-full transition-colors">
+        <div className="absolute bottom-4 right-4 z-20">
+          <button 
+            onClick={handleMC} 
+            className="p-3 bg-white hover:bg-gray-200 rounded-full transition-colors shadow-lg border border-gray-200"
+          >
             <Trash2 size={24} className="text-gray-600 hover:text-gray-900" />
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
