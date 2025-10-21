@@ -1,8 +1,37 @@
 import { useState } from "react";
 
+// Utility function to format number with commas
+const formatNumber = (num) => {
+  if (num === undefined || num === null || num === "") return "0";
+
+  const str = String(num);
+
+  // Handle negative numbers
+  const isNegative = str.startsWith("-");
+  const absoluteStr = isNegative ? str.slice(1) : str;
+
+  // Split by decimal point if exists
+  const parts = absoluteStr.split(".");
+  const integerPart = parts[0];
+  const decimalPart = parts[1] ? "." + parts[1] : "";
+
+  // Add commas to integer part
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  // Combine back
+  const result = (isNegative ? "-" : "") + formattedInteger + decimalPart;
+  return result;
+};
+
+// Utility function to remove commas from formatted number
+const unformatNumber = (formattedNum) => {
+  if (typeof formattedNum !== "string") return formattedNum;
+  return formattedNum.replace(/,/g, "");
+};
+
 function useCalculator() {
-  // Main display
-  const [display, setDisplay] = useState("0");
+  // Main display (stored as unformatted number string)
+  const [display, setDisplayRaw] = useState("0");
   const [calculScreen, setCalculScreen] = useState("");
 
   // Calculator state (following Calculator-Windows-main algorithm)
@@ -11,6 +40,16 @@ function useCalculator() {
   const [operatorType, setOperatorType] = useState("");
   const [onResult, setOnResult] = useState(false);
   const [firstNumberEntered, setFirstNumberEntered] = useState(false);
+
+  // Wrapper to set display with formatting
+  const setDisplay = (value) => {
+    setDisplayRaw(String(value));
+  };
+
+  // Get formatted display for UI
+  const getFormattedDisplay = () => {
+    return formatNumber(display);
+  };
 
   // History and Memory
   const [history, setHistory] = useState([]);
@@ -21,8 +60,11 @@ function useCalculator() {
   const handleNumber = (num) => {
     const numStr = String(num);
 
+    // Get unformatted display for calculations
+    const unformattedDisplay = unformatNumber(display);
+
     // Accept only 1 dot
-    if (numStr === "." && display.includes(".")) return;
+    if (numStr === "." && unformattedDisplay.includes(".")) return;
 
     // Set the value of display to number if:
     // - we're waiting on the second number
@@ -32,13 +74,15 @@ function useCalculator() {
     if (
       (isWaiting && firstNumberEntered) ||
       onResult ||
-      (display.startsWith("0") && numStr !== "." && !display.includes("."))
+      (unformattedDisplay.startsWith("0") &&
+        numStr !== "." &&
+        !unformattedDisplay.includes("."))
     ) {
       setDisplay(numStr);
       setOnResult(false);
       setFirstNumberEntered(false);
     } else {
-      setDisplay(display + numStr);
+      setDisplay(unformattedDisplay + numStr);
     }
   };
 
@@ -58,7 +102,7 @@ function useCalculator() {
     };
 
     setOperatorType(operator);
-    const prevNum = Number(display);
+    const prevNum = Number(unformatNumber(display));
     setPreviousNumber(prevNum);
     setCalculScreen(`${prevNum} ${operatorSymbols[operator] || operator}`);
     setIsWaiting(true);
@@ -72,7 +116,7 @@ function useCalculator() {
     setOnResult(true); // Telling there's now a result on the screen
 
     // Setting useful variables
-    const lastNumber = Number(display);
+    const lastNumber = Number(unformatNumber(display));
     let answer = 0;
 
     // Putting the equation on the screen
@@ -123,7 +167,7 @@ function useCalculator() {
 
   // OPERATION INSTANT - Following Calculator-Windows-main algorithm
   const operationInstant = (operator) => {
-    const currentNumber = Number(display);
+    const currentNumber = Number(unformatNumber(display));
     let result = 0;
     let operationText = "";
 
@@ -185,15 +229,23 @@ function useCalculator() {
   // Backspace - Following Calculator-Windows-main algorithm
   const handleBackspace = () => {
     // If there's something to delete, we delete it else we set the value to 0
+    const unformattedDisplay = unformatNumber(display);
     setDisplay(
-      display.length === 1 ? "0" : display.substring(0, display.length - 1)
+      unformattedDisplay.length === 1
+        ? "0"
+        : unformattedDisplay.substring(0, unformattedDisplay.length - 1)
     );
   };
 
   // Negate - Following Calculator-Windows-main algorithm
   const handleNegate = () => {
     // If there's a number we inverse it else we set the value to 0
-    setDisplay(display.length !== 0 ? String(-Number(display)) : "0");
+    const unformattedDisplay = unformatNumber(display);
+    setDisplay(
+      unformattedDisplay.length !== 0
+        ? String(-Number(unformattedDisplay))
+        : "0"
+    );
   };
 
   // Wrapper functions for instant operations
@@ -219,7 +271,7 @@ function useCalculator() {
 
   // Memory Add
   const handleMPlus = () => {
-    const current = parseFloat(display);
+    const current = parseFloat(unformatNumber(display));
     if (memoryList.length > 0) {
       const updatedList = [...memoryList];
       updatedList[updatedList.length - 1].value += current;
@@ -232,7 +284,7 @@ function useCalculator() {
 
   // Memory Subtract
   const handleMMinus = () => {
-    const current = parseFloat(display);
+    const current = parseFloat(unformatNumber(display));
     if (memoryList.length > 0) {
       const updatedList = [...memoryList];
       updatedList[updatedList.length - 1].value -= current;
@@ -245,7 +297,7 @@ function useCalculator() {
 
   // Memory Store
   const handleMS = () => {
-    const current = parseFloat(display);
+    const current = parseFloat(unformatNumber(display));
     setMemoryList([...memoryList, { value: current, operation: "Stored" }]);
     setHasMemory(true);
   };
@@ -261,7 +313,7 @@ function useCalculator() {
 
   // Memory Add to specific item
   const memoryAddToItem = (index) => {
-    const current = parseFloat(display);
+    const current = parseFloat(unformatNumber(display));
     const updatedList = [...memoryList];
     updatedList[index].value += current;
     setMemoryList(updatedList);
@@ -269,14 +321,15 @@ function useCalculator() {
 
   // Memory Subtract from specific item
   const memorySubtractFromItem = (index) => {
-    const current = parseFloat(display);
+    const current = parseFloat(unformatNumber(display));
     const updatedList = [...memoryList];
     updatedList[index].value -= current;
     setMemoryList(updatedList);
   };
 
   return {
-    display,
+    display: getFormattedDisplay(),
+    rawDisplay: display,
     expression: calculScreen, // Use calculScreen as expression for display
     history,
     setHistory,

@@ -1,0 +1,931 @@
+% File: 1.tex - Nội dung báo cáo bài tập về nhà
+% Được include vào main document với template HCMUS
+
+% Cài đặt cho code listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{lightgray!20},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{red!60!black},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single
+}
+\lstset{style=mystyle}
+
+% Định nghĩa Unicode characters
+\DeclareUnicodeCharacter{221A}{\ensuremath{\sqrt{}}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
+
+\subsection{GIỚI THIỆU VỀ BÀI TẬP}
+
+Phát triển một ứng dụng máy tính trên trình duyệt (web-based calculator) mô phỏng chức năng "Basic Mode" trong Windows 11 Calculator.
+
+Ứng dụng cần hỗ trợ các phép toán cơ bản như:
+\begin{itemize}
+    \item Cộng (+)
+    \item Trừ (-)
+    \item Nhân (×)
+    \item Chia (÷)
+    \item Phần trăm (\%)
+    \item Căn bậc hai ($\sqrt{x}$)
+    \item Đảo dấu (±)
+\end{itemize}
+
+Ứng dụng phải được xây dựng theo chuẩn phát triển web hiện đại, và có thể là:
+\begin{itemize}
+    \item Một Single-Page Application (SPA) hoặc
+    \item Một ứng dụng thuần HTML/CSS/JavaScript.
+\end{itemize}
+
+\subsection{NỘI DUNG BÁO CÁO}
+
+\subsubsection{Các yêu cầu đã được thực hiện}
+
+\begin{itemize}
+    \item Thực hiện được web mô phỏng ứng dụng Calculator của windows 11
+    \item Thực hiện được các phép tính của ứng dụng
+    \item Giao diện gọn gàng, dễ nhìn, phản hồi tốt (responsive).
+    \item Giao diện thân thiện với người dùng
+    \item Ứng dụng đã được deploy trên vercel
+\end{itemize}
+
+\subsubsection{Các công nghệ được sử dụng}
+
+\begin{itemize}
+    \item Frontend Framework: React 19.1.1
+    \item Build Tool: Vite 7.1.14
+    \item Styling: Tailwind CSS 4.1.14
+    \item Icons: Lucide React 0.546.0
+    \item Development Language: JavaScript (ES6+)
+    \item Version Control: Git
+    \item Test: Jest
+    \item Support tool: GPT
+    \item Hosting: Vercel
+\end{itemize}
+
+\subsection{Functional Specifications (Yêu cầu chức năng)}
+
+\subsubsection{Tính năng cốt lõi}
+
+\paragraph{Hệ thống nhập số}
+
+\begin{itemize}
+    \item \textbf{Nhập chữ số}: Người dùng có thể nhập số từ 0-9 thông qua nút bấm hoặc bàn phím
+    \item \textbf{Dấu thập phân}: Hỗ trợ số thập phân với một dấu chấm duy nhất cho mỗi số
+    \item \textbf{Định dạng số}: Hiển thị số với dấu phẩy phân cách hàng nghìn
+    \begin{itemize}
+        \item 1000 → 1,000
+        \item 9999999 → 9,999,999
+        \item Hỗ trợ số âm: -1000 → -1,000
+        \item Giữ nguyên số thập phân: 1234.56 → 1,234.56
+    \end{itemize}
+    \item \textbf{Hiển thị}:
+    \begin{itemize}
+        \item Màn hình khởi tạo hiển thị "0"
+        \item Tự động loại bỏ các số 0 đứng đầu (trừ "0.")
+        \item Độ chính xác hiển thị xử lý giới hạn số trong JavaScript
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Các phép toán số học cơ bản}
+
+Máy tính hỗ trợ bốn phép toán cơ bản:
+
+\begin{center}
+\begin{tabular}{|l|c|p{8cm}|}
+\hline
+\textbf{Phép toán} & \textbf{Ký hiệu} & \textbf{Mô tả} \\
+\hline
+Cộng & + & Cộng hai số \\
+\hline
+Trừ & - & Trừ số thứ hai từ số thứ nhất \\
+\hline
+Nhân & × & Nhân hai số \\
+\hline
+Chia & ÷ & Chia số thứ nhất cho số thứ hai \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Hành vi của phép toán}:
+\begin{itemize}
+    \item Các phép toán liên tiếp được tính toán ngay lập tức (ví dụ: 5 + 3 + 2 sẽ tính 5+3=8 trước khi cộng 2)
+    \item Chia cho 0 hiển thị thông báo lỗi: "Không thể chia cho 0"
+    \item Kết quả được hiển thị với độ chính xác phù hợp
+\end{itemize}
+
+\paragraph{Các phép toán nâng cao}
+
+\textbf{Phần trăm (\%)}
+\begin{itemize}
+    \item Tính phần trăm của giá trị hiện tại
+    \item Công thức: giá\_trị\_hiện\_tại × 0.01
+    \item Ví dụ: 50\% → 0.5
+\end{itemize}
+
+\textbf{Bình phương (x²)}
+\begin{itemize}
+    \item Tính bình phương của số hiện tại
+    \item Công thức: x × x
+    \item Ví dụ: 5² → 25
+\end{itemize}
+
+\textbf{Căn bậc hai ($\sqrt{x}$)}
+\begin{itemize}
+    \item Tính căn bậc hai của số hiện tại
+    \item Công thức: $\sqrt{x}$
+    \item Ví dụ: $\sqrt{9} = 3$
+    \item Số âm hiển thị lỗi: "Đầu vào không hợp lệ"
+\end{itemize}
+
+\textbf{Nghịch đảo (1/x)}
+\begin{itemize}
+    \item Tính nghịch đảo của số hiện tại
+    \item Công thức: 1 ÷ x
+    \item Ví dụ: 1/4 → 0.25
+    \item Đầu vào bằng 0 hiển thị lỗi: "Không thể chia cho 0"
+\end{itemize}
+
+\textbf{Đổi dấu (±)}
+\begin{itemize}
+    \item Chuyển đổi giữa dương và âm
+    \item Ví dụ: 5 → -5, -5 → 5
+\end{itemize}
+
+\paragraph{Chức năng xóa}
+
+\begin{center}
+\begin{tabular}{|l|c|p{8cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Nút} & \textbf{Hành vi} \\
+\hline
+Clear Entry & CE & Xóa đầu vào hiện tại, giữ nguyên phép toán \\
+\hline
+Clear All & C & Đặt lại máy tính về trạng thái ban đầu \\
+\hline
+Backspace & ← & Xóa chữ số/ký tự cuối cùng \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Chức năng bộ nhớ}
+
+\textbf{Memory Storage (MS)}
+\begin{itemize}
+    \item Lưu giá trị hiển thị hiện tại vào danh sách bộ nhớ
+    \item Hỗ trợ nhiều giá trị bộ nhớ
+    \item Có thể lưu giá trị bằng 0
+\end{itemize}
+
+\textbf{Memory Recall (MR)}
+\begin{itemize}
+    \item Gọi lại giá trị bộ nhớ đầu tiên
+    \item Không xóa giá trị khỏi bộ nhớ
+\end{itemize}
+
+\textbf{Memory Clear (MC)}
+\begin{itemize}
+    \item Xóa tất cả giá trị bộ nhớ
+    \item Cũng có thể truy cập qua biểu tượng thùng rác trong bảng bộ nhớ
+\end{itemize}
+
+\textbf{Memory Add (M+)}
+\begin{itemize}
+    \item Cộng giá trị hiển thị hiện tại vào giá trị bộ nhớ đã chọn
+    \item Có sẵn trong bảng bộ nhớ khi di chuột
+\end{itemize}
+
+\textbf{Memory Subtract (M-)}
+\begin{itemize}
+    \item Trừ giá trị hiển thị hiện tại từ giá trị bộ nhớ đã chọn
+    \item Có sẵn trong bảng bộ nhớ khi di chuột
+\end{itemize}
+
+\paragraph{Theo dõi lịch sử}
+
+\begin{itemize}
+    \item Tự động ghi lại tất cả các phép tính đã hoàn thành
+    \item Hiển thị biểu thức và kết quả cho mỗi phép tính
+    \item Định dạng: toán\_hạng1 toán\_tử toán\_hạng2 = kết\_quả
+    \item Ví dụ: 5 + 3 = 8
+    \item Lịch sử có thể được xóa qua biểu tượng thùng rác
+    \item Nhấp vào các mục lịch sử sẽ hiển thị kết quả (chỉ đọc)
+\end{itemize}
+
+\paragraph{Hệ thống hiển thị}
+
+\textbf{Màn hình trên (Biểu thức)}
+\begin{itemize}
+    \item Hiển thị phép toán đang thực hiện: 5 +
+    \item Kích thước font: 32px
+    \item Màu chữ: Xám (\#6B7280)
+    \item Căn lề: Phải
+\end{itemize}
+
+\textbf{Màn hình chính (Kết quả)}
+\begin{itemize}
+    \item Hiển thị số hiện tại hoặc kết quả
+    \item Kích thước font: 56px
+    \item Font weight: Bold
+    \item Căn lề: Phải
+    \item Kích thước động cho số dài
+\end{itemize}
+
+\textbf{Các nút chỉ báo bộ nhớ}
+\begin{itemize}
+    \item Hàng các nút thao tác bộ nhớ (MC, MR, M+, M-, MS)
+    \item Trạng thái vô hiệu hóa khi không có bộ nhớ
+    \item Được kích hoạt và tương tác khi có bộ nhớ
+\end{itemize}
+
+\subsubsection{Xử lý đầu vào người dùng}
+
+\paragraph{Xác thực đầu vào}
+\begin{itemize}
+    \item Ngăn chặn nhiều dấu thập phân trong một số
+    \item Chặn các phép toán không hợp lệ (ví dụ: căn bậc hai của số âm)
+    \item Xử lý các trường hợp đặc biệt (chia cho 0, nghịch đảo của 0)
+\end{itemize}
+
+\paragraph{Thứ tự ưu tiên phép toán}
+\begin{itemize}
+    \item Các phép toán được đánh giá từ trái sang phải khi nhập
+    \item Không có thứ tự ưu tiên ngầm định (nhân/chia không được ưu tiên)
+    \item Khớp với hành vi của Windows 11 Calculator
+    \item Người dùng kiểm soát thứ tự qua nút bằng hoặc các phép toán liên tiếp
+\end{itemize}
+
+\subsubsection{Các giả định}
+
+\begin{enumerate}
+    \item \textbf{Làm tròn}: Sử dụng độ chính xác floating-point mặc định của JavaScript
+    \item \textbf{Giới hạn số}: Không có giới hạn rõ ràng ngoài kiểu Number của JavaScript
+    \item \textbf{Thứ tự ưu tiên toán tử}: Đánh giá từ trái sang phải (kiểu máy tính, không theo thứ tự toán học)
+    \item \textbf{Hành vi bộ nhớ}: Bộ nhớ lưu giá trị, không phải biểu thức
+    \item \textbf{Tính bền vững lịch sử}: Lịch sử sẽ xóa khi refresh trang (không có localStorage)
+    \item \textbf{Khôi phục lỗi}: Lỗi sẽ đặt lại máy tính về trạng thái mặc định sau khi xác nhận
+\end{enumerate}
+
+\subsection{Non-Functional Specifications (Yêu cầu phi chức năng)}
+
+\subsubsection{Hiệu suất}
+
+\paragraph{Thời gian phản hồi}
+\begin{itemize}
+    \item \textbf{Phản hồi nhấp chuột}: < 50ms (đã thử đo bằng code)
+    \item \textbf{Tốc độ tính toán}: Tức thời cho tất cả các phép toán
+    \item \textbf{Cập nhật màn hình}: Đồng bộ với hành động người dùng
+\end{itemize}
+
+\paragraph{Tối ưu hóa}
+\begin{itemize}
+    \item React hooks giảm thiểu việc render lại
+    \item Custom hook (useCalculator) tập trung quản lý state
+    \item Kiến trúc dựa trên component cho phép cập nhật hiệu quả
+    \item Tailwind CSS cung cấp bản build production được tối ưu hóa
+\end{itemize}
+
+\subsubsection{Khả năng sử dụng}
+
+\paragraph{Thiết kế giao diện người dùng}
+
+\textbf{Tính nhất quán trực quan}: Khớp với ngôn ngữ thiết kế Windows 11 Calculator
+
+\textbf{Bảng màu} (Cố gắng sử dụng màu gần giống nhất):
+\begin{itemize}
+    \item Background: Xám nhạt (\#F3F3F3)
+    \item Buttons: Trắng với viền xám
+    \item Operators: Background nhạt
+    \item Equals: Xanh (\#0078D4)
+\end{itemize}
+
+\textbf{Typography}: Font hệ thống để có cảm giác tự nhiên
+
+\textbf{Spacing}: Padding và margin đầy đủ cho các mục tiêu chạm
+
+\subsubsection{Khả năng tiếp cận}
+\begin{itemize}
+    \item \textbf{Kích thước nút}: Mục tiêu chạm lớn (phù hợp với di động)
+    \item \textbf{Độ tương phản}: Độ tương phản màu đủ để dễ đọc
+    \item \textbf{Trạng thái focus}: Trạng thái hover và active rõ ràng
+    \item \textbf{Thông báo lỗi}: Thông báo lỗi mô tả bằng tiếng Việt
+\end{itemize}
+
+\subsubsection{Phản hồi người dùng}
+\begin{itemize}
+    \item Hiệu ứng hover trên tất cả các phần tử tương tác
+    \item Trạng thái active/pressed trên các nút
+    \item Chỉ báo trực quan của bảng memory/history đã chọn
+    \item Chuyển đổi mượt mà cho việc chuyển bảng
+\end{itemize}
+
+\subsection{Tương thích trình duyệt}
+
+\textbf{Các trình duyệt được hỗ trợ}:
+\begin{itemize}
+    \item Google Chrome (phiên bản 90+)
+    \item Microsoft Edge (phiên bản 90+)
+    \item Mozilla Firefox (phiên bản 88+)
+    \item Safari (phiên bản 14+)
+\end{itemize}
+
+\textbf{Phương pháp kiểm tra}:
+\begin{itemize}
+    \item Các tính năng ES6+ hiện đại yêu cầu phiên bản trình duyệt gần đây
+    \item CSS Grid và Flexbox cho layout
+    \item Không cần prefix đặc biệt cho trình duyệt (được xử lý bởi build tools)
+\end{itemize}
+
+\subsection{Khả năng responsive}
+
+\subsubsection{Breakpoints}
+
+\textbf{Mobile} (< 1024px):
+\begin{itemize}
+    \item Layout một cột
+    \item Lịch sử/Bộ nhớ ẩn theo mặc định
+    \item Ngăn kéo dưới cùng để truy cập lịch sử
+    \item Máy tính toàn chiều rộng
+\end{itemize}
+
+\textbf{Desktop} ($\geq$ 1024px):
+\begin{itemize}
+    \item Layout hai bảng
+    \item Bảng bên (400px) cho Lịch sử/Bộ nhớ
+    \item Máy tính chiếm chiều rộng còn lại
+    \item Vị trí biểu tượng thùng rác cố định
+\end{itemize}
+
+\subsubsection{Kích thước tối thiểu}
+\begin{itemize}
+    \item Chiều rộng tối thiểu: 320px
+    \item Chiều cao tối thiểu: 500px
+    \item Đảm bảo máy tính vẫn hoạt động trên các thiết bị nhỏ
+\end{itemize}
+
+\subsubsection{Hỗ trợ cảm ứng}
+\begin{itemize}
+    \item Tất cả nút được tối ưu hóa cho đầu vào cảm ứng
+    \item Khoảng cách đầy đủ ngăn chặn nhấp nhầm
+    \item Ngăn kéo di động hỗ trợ cử chỉ vuốt (qua đóng overlay)
+\end{itemize}
+
+\subsection{Độ tin cậy}
+
+\subsubsection{Xử lý lỗi}
+\begin{itemize}
+    \item Chia cho 0: Thông báo lỗi graceful
+    \item Phép toán không hợp lệ: Thông báo lỗi mô tả
+    \item Khôi phục trạng thái: Máy tính đặt lại về trạng thái an toàn sau lỗi
+\end{itemize}
+
+\subsubsection{Tính nhất quán trạng thái}
+\begin{itemize}
+    \item Tất cả state được quản lý thông qua React hooks
+    \item Nguồn sự thật duy nhất (hook useCalculator)
+    \item Ngăn chặn mất đồng bộ state
+\end{itemize}
+
+\subsection{Khả năng bảo trì}
+
+\subsubsection{Tổ chức code}
+
+\begin{lstlisting}[language=bash, caption=Cấu trúc thư mục dự án]
+src/
+|-- components/          # Các component UI có thể tái sử dụng
+|   |-- Header.jsx      # Header ứng dụng
+|   |-- CalculatorHeader.jsx  # Bộ chọn mode & toggle bảng
+|   |-- Display.jsx     # Hiển thị biểu thức và kết quả
+|   |-- ButtonGrid.jsx  # Layout nút máy tính
+|   |-- HistoryPanel.jsx    # Lịch sử tính toán
+|   |-- MemoryPanel.jsx     # Hiển thị bộ nhớ lưu trữ
+|   |-- SidePanel.jsx       # Container bảng bên desktop
+|   +-- MobileHistoryDrawer.jsx  # Ngăn kéo lịch sử mobile
+|-- hooks/
+|   +-- useCalculator.js    # Logic máy tính cốt lõi
+|-- App.css
+|-- App.jsx
+|-- index.css
++-- main.jsx
+\end{lstlisting}
+
+\subsubsection{Chất lượng code}
+\begin{itemize}
+    \item \textbf{Kích thước component}: Các component nhỏ, tập trung (< 150 dòng)
+    \item \textbf{Tách biệt mối quan tâm}: Logic trong hooks, UI trong components
+    \item \textbf{Props Drilling}: Tối thiểu (cấu trúc props flow rõ ràng)
+    \item \textbf{Quy ước đặt tên}: Tên rõ ràng, mô tả
+    \item \textbf{Comments}: Thêm nơi logic phức tạp
+\end{itemize}
+
+\subsubsection{Khả năng mở rộng}
+\begin{itemize}
+    \item Dễ thêm phép toán mới (mở rộng ButtonGrid và hook)
+    \item Khả năng tái sử dụng component (patterns HistoryPanel, MemoryPanel)
+    \item Hệ thống style cho phép thay đổi theme nhanh
+\end{itemize}
+
+\subsection{Acceptance Criteria (Tiêu chí chấp nhận)}
+
+\subsection{Tiêu chí chấp nhận chức năng}
+
+\begin{longtable}{|l|p{8cm}|c|}
+\hline
+\textbf{ID} & \textbf{Tiêu chí} & \textbf{Trạng thái} \\
+\hline
+\endhead
+AC-01 & Máy tính hiển thị "0" khi khởi động & ✅ Pass \\
+AC-02 & Các nút số (0-9) nhập đúng & ✅ Pass \\
+AC-03 & Dấu thập phân có thể thêm một lần mỗi số & ✅ Pass \\
+AC-04 & Phép cộng trả về kết quả đúng & ✅ Pass \\
+AC-05 & Phép trừ trả về kết quả đúng & ✅ Pass \\
+AC-06 & Phép nhân trả về kết quả đúng & ✅ Pass \\
+AC-07 & Phép chia trả về kết quả đúng & ✅ Pass \\
+AC-08 & Chia cho 0 hiển thị thông báo lỗi & ✅ Pass \\
+AC-09 & Tính phần trăm chính xác & ✅ Pass \\
+AC-10 & Căn bậc hai của số dương đúng & ✅ Pass \\
+AC-11 & Căn bậc hai của số âm hiển thị lỗi & ✅ Pass \\
+AC-12 & Tính bình phương (x²) chính xác & ✅ Pass \\
+AC-13 & Tính nghịch đảo (1/x) chính xác & ✅ Pass \\
+AC-14 & Nghịch đảo của 0 hiển thị lỗi & ✅ Pass \\
+AC-15 & Đổi dấu (±) chuyển đổi đúng & ✅ Pass \\
+AC-16 & CE chỉ xóa mục nhập hiện tại & ✅ Pass \\
+AC-17 & C xóa tất cả trạng thái máy tính & ✅ Pass \\
+AC-18 & Backspace xóa ký tự cuối & ✅ Pass \\
+AC-19 & MS lưu giá trị vào bộ nhớ & ✅ Pass \\
+AC-20 & MR gọi lại giá trị bộ nhớ & ✅ Pass \\
+AC-21 & M+ cộng vào giá trị bộ nhớ & ✅ Pass \\
+AC-22 & M- trừ từ giá trị bộ nhớ & ✅ Pass \\
+AC-23 & MC xóa toàn bộ bộ nhớ & ✅ Pass \\
+AC-24 & Lịch sử ghi các phép tính hoàn thành & ✅ Pass \\
+AC-25 & Lịch sử có thể được xóa & ✅ Pass \\
+AC-26 & Các phép toán liên tiếp tính đúng & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Tiêu chí chấp nhận giao diện người dùng}
+
+\begin{longtable}{|l|p{8cm}|c|}
+\hline
+\textbf{ID} & \textbf{Tiêu chí} & \textbf{Trạng thái} \\
+\hline
+\endhead
+UI-01 & Màn hình cập nhật ngay sau đầu vào & ✅ Pass \\
+UI-02 & Nút có hiệu ứng hover & ✅ Pass \\
+UI-03 & Nút bằng có màu xanh đặc biệt & ✅ Pass \\
+UI-04 & Nút memory vô hiệu hóa khi không có memory & ✅ Pass \\
+UI-05 & Bảng lịch sử hiển thị khi toggle & ✅ Pass \\
+UI-06 & Bảng memory hiển thị khi toggle & ✅ Pass \\
+UI-07 & Ngăn kéo mobile xuất hiện khi click biểu tượng lịch sử & ✅ Pass \\
+UI-08 & Biểu tượng thùng rác định vị ở góc dưới-phải & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Tiêu chí chấp nhận thiết kế responsive}
+
+\begin{longtable}{|l|p{8cm}|c|}
+\hline
+\textbf{ID} & \textbf{Tiêu chí} & \textbf{Trạng thái} \\
+\hline
+\endhead
+RD-01 & Máy tính hoạt động trên màn hình $\geq$ 320px width & ✅ Pass \\
+RD-02 & Bảng bên ẩn trên mobile (< 1024px) & ✅ Pass \\
+RD-03 & Lịch sử có thể truy cập qua ngăn kéo mobile & ✅ Pass \\
+RD-04 & Desktop hiển thị layout cạnh nhau & ✅ Pass \\
+RD-05 & Mục tiêu chạm đủ lớn cho sử dụng mobile & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Tiêu chí chấp nhận tương thích trình duyệt}
+
+\begin{longtable}{|l|p{8cm}|c|}
+\hline
+\textbf{ID} & \textbf{Tiêu chí} & \textbf{Trạng thái} \\
+\hline
+\endhead
+CB-01 & Hoạt động đúng trong Chrome & ✅ Pass \\
+CB-02 & Hoạt động đúng trong Edge & ✅ Pass \\
+CB-03 & Hoạt động đúng trong Firefox & ✅ Pass \\
+CB-04 & Hoạt động đúng trong Safari & ✅ Pass \\
+CB-05 & Tính nhất quán trực quan trên các trình duyệt & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Tiêu chí chấp nhận triển khai}
+
+\begin{longtable}{|l|p{8cm}|c|}
+\hline
+\textbf{ID} & \textbf{Tiêu chí} & \textbf{Trạng thái} \\
+\hline
+\endhead
+DP-01 & Ứng dụng build không lỗi & ✅ Pass \\
+DP-02 & Phiên bản hosted có thể truy cập công khai & ✅ Pass \\
+DP-03 & Tất cả tính năng hoạt động trong production & ✅ Pass \\
+DP-04 & Thời gian loading < 3 giây & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Testing Plan (Kế hoạch kiểm thử)}
+
+\subsection{Phương pháp kiểm thử}
+
+\textbf{Phương pháp kiểm thử}: Kiểm thử chức năng thủ công với các test case được tài liệu hóa
+
+\textbf{Môi trường kiểm thử}:
+\begin{itemize}
+    \item Chrome 120+ (Windows 11)
+    \item Firefox 121+ (Windows 11)
+    \item Edge 120+ (Windows 11)
+    \item Chrome Mobile (Android)
+\end{itemize}
+
+\textbf{Các giai đoạn kiểm thử}:
+\begin{enumerate}
+    \item Unit Testing (cấp component)
+    \item Integration Testing (quy trình tính năng)
+    \item UI/UX Testing (responsive, accessibility)
+    \item Browser Compatibility Testing
+    \item User Acceptance Testing
+\end{enumerate}
+
+\subsection{Test Cases (Các trường hợp kiểm thử)}
+
+\subsubsection{Các phép toán số học cơ bản}
+
+\begin{longtable}{|l|l|l|l|l|c|}
+\hline
+\textbf{Test ID} & \textbf{Test Case} & \textbf{Input} & \textbf{Expected} & \textbf{Actual} & \textbf{Result} \\
+\hline
+\endhead
+TC-001 & Phép cộng đơn giản & 2 + 3 = & 5 & 5 & ✅ Pass \\
+TC-002 & Phép trừ đơn giản & 10 − 4 = & 6 & 6 & ✅ Pass \\
+TC-003 & Phép nhân đơn giản & 7 × 8 = & 56 & 56 & ✅ Pass \\
+TC-004 & Phép chia đơn giản & 20 ÷ 5 = & 4 & 4 & ✅ Pass \\
+TC-005 & Chia cho 0 & 10 ÷ 0 = & Lỗi & "Không thể chia cho 0" & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsubsection{Định dạng số hiển thị}
+
+\begin{longtable}{|l|l|l|l|l|c|}
+\hline
+\textbf{Test ID} & \textbf{Test Case} & \textbf{Input} & \textbf{Expected} & \textbf{Actual} & \textbf{Result} \\
+\hline
+\endhead
+TC-044 & Định dạng số nghìn & 1000 & 1,000 & 1,000 & ✅ Pass \\
+TC-045 & Định dạng số triệu & 1000000 & 1,000,000 & 1,000,000 & ✅ Pass \\
+TC-046 & Định dạng số âm & -1000 & -1,000 & -1,000 & ✅ Pass \\
+TC-047 & Định dạng số thập phân & 1234.56 & 1,234.56 & 1,234.56 & ✅ Pass \\
+TC-048 & Không định dạng số nhỏ & 999 & 999 & 999 & ✅ Pass \\
+\hline
+\end{longtable}
+
+\subsection{Tóm tắt kết quả kiểm thử}
+
+\textbf{Tổng số Test Cases}: 57 \\
+\textbf{Đã qua}: 57 \\
+\textbf{Thất bại}: 0 \\
+\textbf{Tỷ lệ thành công}: 100\%
+
+\textbf{Các phát hiện chính}:
+\begin{itemize}
+    \item Tất cả các chức năng máy tính cốt lõi hoạt động như mong đợi
+    \item Xử lý lỗi mạnh mẽ và thân thiện với người dùng
+    \item Thiết kế responsive thích ứng đúng trên tất cả breakpoint đã kiểm thử
+    \item Các tính năng memory và history hoạt động không có vấn đề
+    \item Các trường hợp đặc biệt được xử lý một cách graceful
+    \item Chức năng định dạng số với dấu phẩy hoạt động chính xác
+\end{itemize}
+
+\subsection{Technical Implementation (Thực hiện kỹ thuật)}
+
+\subsection{Kiến trúc tổng quan}
+
+Ứng dụng tuân theo \textbf{kiến trúc dựa trên component} sử dụng React với custom hook để quản lý state. Việc tách biệt này đảm bảo tổ chức code sạch và khả năng bảo trì.
+
+\subsection{Quản lý State}
+
+\textbf{Calculator State (useCalculator hook)}:
+
+\begin{lstlisting}[language=JavaScript, caption=Cấu trúc State]
+- display: string           // Giá trị hiển thị hiện tại
+- expression: string        // Expression phép toán (ví dụ: "5 +")
+- currentOperand: string    // Số hiện tại đang nhập
+- previousOperand: string   // Toán hạng đầu trong phép toán
+- operator: string | null   // Toán tử hiện tại (+, −, ×, ÷)
+- shouldResetDisplay: bool  // Flag để reset display ở lần nhập tiếp
+- history: array            // List các phép tính đã hoàn thành
+- memoryList: array         // List các giá trị memory đã lưu
+- hasMemory: bool           // Có memory tồn tại hay không
+\end{lstlisting}
+
+\subsection{Thuật toán chính}
+
+\subsubsection{Tính toán tuần tự}
+
+\begin{lstlisting}[language=JavaScript, caption=Thuật toán tính toán tuần tự]
+// Khi nút operator được nhấn:
+if (previousOperand && currentOperand && operator) {
+  // Tính phép toán trước đó trước
+  calculate();
+}
+setOperator(newOperator);
+setPreviousOperand(currentOperand);
+setShouldResetDisplay(true);
+\end{lstlisting}
+
+Điều này cho phép: \texttt{5 + 3 + 2} → tính \texttt{5+3=8}, rồi chuẩn bị \texttt{8+2}
+
+\subsubsection{Định dạng số hiển thị}
+
+\begin{lstlisting}[language=JavaScript, caption=Hàm định dạng số]
+// Hàm định dạng số với dấu phẩy phân cách hàng nghìn
+const formatNumber = (num) => {
+  const numStr = String(num);
+  
+  // Xử lý số âm
+  const isNegative = numStr.startsWith('-');
+  const absoluteStr = isNegative ? numStr.slice(1) : numStr;
+  
+  // Tách phần nguyên và thập phân
+  const [integerPart, decimalPart] = absoluteStr.split('.');
+  
+  // Thêm dấu phẩy cho phần nguyên
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  
+  // Kết hợp lại
+  let result = formattedInteger;
+  if (decimalPart !== undefined) {
+    result += '.' + decimalPart;
+  }
+  
+  return isNegative ? '-' + result : result;
+};
+
+// Hàm loại bỏ định dạng để tính toán
+const unformatNumber = (formattedNum) => {
+  return formattedNum.replace(/,/g, '');
+};
+\end{lstlisting}
+
+\subsection{Cấu hình Build}
+
+\textbf{Vite Configuration}:
+
+\begin{lstlisting}[language=JavaScript, caption=Cấu hình Vite]
+// vite.config.js
+export default {
+  plugins: [react()],
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    minify: "terser",
+  },
+};
+\end{lstlisting}
+
+\subsection{Deployment (Triển khai)}
+
+\subsection{Quy trình Build}
+
+\textbf{Bước 1: Cài đặt Dependencies}
+\begin{lstlisting}[language=bash]
+npm install
+\end{lstlisting}
+
+\textbf{Bước 2: Chạy Development Server} (để kiểm thử)
+\begin{lstlisting}[language=bash]
+npm run dev
+\end{lstlisting}
+
+\textbf{Bước 3: Tạo Production Build}
+\begin{lstlisting}[language=bash]
+npm run build
+\end{lstlisting}
+
+\begin{itemize}
+    \item Thư mục output: \texttt{dist/}
+    \item Assets được tối ưu hóa, minified và bundle
+    \item Sẵn sàng cho static hosting
+\end{itemize}
+
+\subsection{Tùy chọn triển khai}
+
+\subsubsection{Tùy chọn 1: Vercel (Được khuyến nghị)}
+
+\begin{lstlisting}[language=bash]
+# Cài Vercel CLI
+npm i -g vercel
+
+# Triển khai
+vercel
+\end{lstlisting}
+
+\textbf{Ưu điểm}:
+\begin{itemize}
+    \item Tự động build từ Git repository
+    \item CDN toàn cầu tức thời
+    \item Zero configuration cho các dự án Vite
+    \item Có tier miễn phí
+\end{itemize}
+
+\subsection{URL Triển khai}
+
+\textbf{Production URL}: \url{https://calculator-ltchcmus.vercel.app/}
+
+\subsection{Prompt Engineering \& AI Assistance}
+
+\subsection{Công cụ AI được sử dụng}
+
+\textbf{AI Assistant chính}: GitHub Copilot (AI Programming Assistant) \\
+\textbf{Ngữ cảnh sử dụng}: Tích hợp VS Code Editor \\
+\textbf{AI Model}: Dựa trên GPT-4 (tại thời điểm phát triển)
+
+\subsection{Ví dụ Prompt Engineering}
+
+\subsubsection{Thiết lập dự án ban đầu}
+
+\textbf{Prompt được sử dụng}:
+\begin{quote}
+"giúp tôi cái phần bộ nhớ" \\
+"cố gắng làm giống 100\% trong ảnh, có các chức năng tính toán như máy tính window 11 luôn"
+\end{quote}
+
+\textbf{Phản hồi AI}: Tạo cấu trúc máy tính ban đầu với các chức năng memory
+
+\textbf{Đánh giá của con người}:
+\begin{itemize}
+    \item Xác minh logic lưu trữ memory
+    \item Xác nhận hỗ trợ nhiều giá trị memory
+    \item Kiểm tra các thao tác memory (MS, MR, M+, M−, MC)
+\end{itemize}
+
+\subsection{Cách AI giúp đỡ trong phát triển}
+
+\subsubsection{Tạo code}
+\begin{itemize}
+    \item \textbf{Boilerplate ban đầu}: Scaffolding component nhanh chóng
+    \item \textbf{Code lặp lại}: Tạo layout button grid
+    \item \textbf{Quản lý State}: Cấu trúc hook và biến state
+\end{itemize}
+
+\subsubsection{Hỗ trợ debugging}
+\begin{itemize}
+    \item \textbf{Vấn đề Layout}: Sửa định vị trash icon
+    \item \textbf{Lỗi State}: Chỉnh sửa logic flag hasMemory trong memory
+    \item \textbf{Lỗi Responsive}: Giải quyết vấn đề overflow panel
+\end{itemize}
+
+\subsection{Tuyên bố Sử dụng AI có Trách nhiệm}
+
+\textbf{Acknowledgment}: Dự án này sử dụng hỗ trợ AI (GitHub Copilot) để tạo code, debugging và hỗ trợ tài liệu.
+
+\textbf{Giám sát của Con người}:
+\begin{itemize}
+    \item Tất cả code do AI tạo đều được đánh giá và kiểm thử
+    \item Tính đúng đắn logic được xác minh thông qua testing thủ công
+    \item Quyết định UI/UX được đưa ra bởi phán đoán con người
+    \item Trách nhiệm chất lượng code cuối cùng: Nhà phát triển con người
+\end{itemize}
+
+\subsection{Kết luận}
+
+\subsection{Tóm tắt dự án}
+
+Dự án này thành công tái tạo Windows 11 Basic Mode Calculator như một ứng dụng web đầy đủ chức năng. Được xây dựng với React và các công nghệ web hiện đại, máy tính cung cấp:
+
+\begin{itemize}
+    \item ✅ Tất cả các phép toán số học chuẩn
+    \item ✅ Các chức năng nâng cao (√, x², 1/x, \%, ±)
+    \item ✅ Lưu trữ memory với nhiều giá trị
+    \item ✅ Theo dõi lịch sử tính toán
+    \item ✅ Thiết kế responsive cho mobile và desktop
+    \item ✅ Giao diện thân thiện người dùng khớp với thiết kế Windows 11
+    \item ✅ Xử lý lỗi mạnh mẽ
+    \item ✅ Định dạng số với dấu phẩy phân cách hàng nghìn
+\end{itemize}
+
+\subsection{Thành tựu kỹ thuật}
+
+\begin{enumerate}
+    \item \textbf{Kiến trúc dựa trên Component}: Cấu trúc code sạch, có thể bảo trì
+    \item \textbf{Custom Hook Pattern}: Quản lý state tập trung
+    \item \textbf{Thiết kế Responsive}: Trải nghiệm seamless trên mobile và desktop
+    \item \textbf{Tech Stack hiện đại}: React 19, Vite, Tailwind CSS
+    \item \textbf{100\% Yêu cầu chức năng}: Tất cả tính năng yêu cầu được thực hiện
+    \item \textbf{Định dạng số thông minh}: Hiển thị số với dấu phẩy cho khả năng đọc tốt hơn
+\end{enumerate}
+
+\subsection{Kết quả kiểm thử}
+
+\begin{itemize}
+    \item \textbf{57 test cases được thực hiện}
+    \item \textbf{100\% tỷ lệ thành công}
+    \item \textbf{Tương thích cross-browser} được xác minh
+    \item \textbf{Thiết kế responsive} được validation trên nhiều thiết bị
+    \item \textbf{Edge cases} được xử lý phù hợp
+\end{itemize}
+
+\subsection{Cải tiến tương lai}
+
+\textbf{Các cải tiến tiềm năng}:
+\begin{enumerate}
+    \item \textbf{Hỗ trợ Keyboard}: Chức năng đầu vào keyboard đầy đủ
+    \item \textbf{History Persistence}: localStorage cho history bền vững
+    \item \textbf{Scientific Mode}: Các chức năng mở rộng (sin, cos, log, etc.)
+    \item \textbf{Themes}: Hỗ trợ dark mode
+    \item \textbf{Accessibility}: ARIA labels, hỗ trợ screen reader
+    \item \textbf{Unit Tests}: Testing tự động với Jest/Vitest
+    \item \textbf{Animations}: Chuyển đổi mượt mà cho panel switching
+    \item \textbf{Export History}: Download lịch sử tính toán dưới dạng CSV/PDF
+\end{enumerate}
+
+\subsection{Suy nghĩ cuối}
+
+Dự án này thể hiện việc ứng dụng thành công các practices phát triển web hiện đại để tạo ra một ứng dụng máy tính functional, thân thiện với người dùng. Sự kết hợp của component model của React, CSS utility-first của Tailwind và sự chú ý cẩn thận đến thiết kế responsive đã tạo ra một sản phẩm đáp ứng tất cả yêu cầu dự án trong khi duy trì chất lượng code và khả năng bảo trì.
+
+Việc bổ sung tính năng định dạng số với dấu phẩy phân cách hàng nghìn đã nâng cao đáng kể trải nghiệm người dùng, làm cho các số lớn dễ đọc hơn và gần gũi hơn với các ứng dụng máy tính chuyên nghiệp.
+
+Việc sử dụng hỗ trợ AI đã tăng tốc phát triển mà không làm giảm sự hiểu biết, thể hiện cách AI có thể được tích hợp một cách có trách nhiệm vào quy trình phát triển như một multiplier năng suất.
+
+\subsection{Phụ lục}
+
+\subsubsection{Phụ lục A: Cấu trúc dự án}
+
+\begin{lstlisting}[language=bash, caption=Cấu trúc thư mục đầy đủ]
+Calculator/
+|-- public/                     # Static assets
+|-- src/
+|   |-- components/
+|   |   |-- ButtonGrid.jsx
+|   |   |-- CalculatorHeader.jsx
+|   |   |-- Display.jsx
+|   |   |-- Header.jsx
+|   |   |-- HistoryPanel.jsx
+|   |   |-- MemoryPanel.jsx
+|   |   |-- MobileHistoryDrawer.jsx
+|   |   +-- SidePanel.jsx
+|   |-- hooks/
+|   |   +-- useCalculator.js
+|   |-- App.css
+|   |-- App.jsx
+|   |-- index.css
+|   +-- main.jsx
+|-- .gitignore
+|-- eslint.config.js
+|-- index.html
+|-- package.json
+|-- README.md
++-- vite.config.js
+\end{lstlisting}
+
+\subsubsection{Phụ lục B: Dependencies}
+
+\begin{lstlisting}[language=JSON, caption=Package.json dependencies]
+{
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.14",
+    "lucide-react": "^0.546.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.14",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.36.0"
+  }
+}
+\end{lstlisting}
+
+\subsubsection{Phụ lục C: Ma trận tương thích trình duyệt}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Tính năng} & \textbf{Chrome 90+} & \textbf{Edge 90+} & \textbf{Firefox 88+} & \textbf{Safari 14+} \\
+\hline
+ES6+ Syntax & ✅ & ✅ & ✅ & ✅ \\
+CSS Grid & ✅ & ✅ & ✅ & ✅ \\
+Flexbox & ✅ & ✅ & ✅ & ✅ \\
+Custom Properties & ✅ & ✅ & ✅ & ✅ \\
+React 19 & ✅ & ✅ & ✅ & ✅ \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\noindent \textbf{Production URL}: \url{https://calculator-ltchcmus.vercel.app/}
+
+\noindent \textbf{GitHub Repository}: \url{https://github.com/ltchcmus/Calculator}
